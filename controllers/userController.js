@@ -1,10 +1,14 @@
 const db = require("../db");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const otpGenerator = require("otp-generator");
 
 // JWT secret key
 const JWT_SECRET = "your_jwt_secret";
+
+// Function to generate a 6-digit numeric OTP
+const generateNumericOTP = () => {
+  return Math.floor(100000 + Math.random() * 900000); // Generates a 6-digit number
+};
 
 // Register a new user
 exports.register = async (req, res) => {
@@ -12,10 +16,7 @@ exports.register = async (req, res) => {
 
   try {
     // Generate OTP
-    const otp = otpGenerator.generate(6, {
-      upperCase: false,
-      specialChars: false,
-    });
+    const otp = generateNumericOTP();
 
     // Generate JWT token
     const token = jwt.sign({ email, role }, JWT_SECRET);
@@ -29,7 +30,7 @@ exports.register = async (req, res) => {
 
     // Log registration process
     console.log(
-      `User registered: ${username} (${email}), OTP: ${otp}, `
+      `User registered: ${username} (${email}), OTP: ${otp}`
       //JWT Token: ${token}
     );
 
